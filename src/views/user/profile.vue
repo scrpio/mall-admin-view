@@ -1,0 +1,153 @@
+<template>
+  <div class="app-container">
+    <el-row class="warp">
+      <el-col :span="24" class="warp-main">
+        <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+          <el-form-item label="账号">
+            <el-input v-model="form.username" style="width: 300px" disabled />
+          </el-form-item>
+          <el-form-item prop="sex" label="性别">
+            <el-radio v-model="form.sex" :label="1">男</el-radio>
+            <el-radio v-model="form.sex" :label="0">女</el-radio>
+          </el-form-item>
+          <el-form-item prop="phone" label="电话">
+            <el-input v-model="form.phone" style="width: 300px" />
+          </el-form-item>
+          <el-form-item prop="email" label="邮箱">
+            <el-input v-model="form.email" type="email" style="width: 300px" />
+          </el-form-item>
+          <el-form-item prop="address" label="地址">
+            <el-input v-model="form.address" style="width: 300px" />
+          </el-form-item>
+          <el-form-item prop="description" label="备注">
+            <el-input v-model="form.description" :rows="2" type="textarea" style="width: 300px" />
+          </el-form-item>
+          <el-form-item prop="avatar" label="用户头像">
+            <el-upload
+              :with-credentials="true"
+              :action="doUpload"
+              :show-file-list="false"
+              :before-upload="handleBeforeUpload"
+              :on-success="handleSuccess"
+              class="avatar-uploader"
+              name="pic">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
+            </el-upload>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleSaveProfile">修改并保存</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+import API from '@/api/api_user'
+
+export default {
+  data() {
+    return {
+      loading: false,
+      imageUrl: '',
+      doUpload: process.env.API_ROOT + '/upload/file',
+      form: {
+        username: '',
+        sex: '',
+        phone: '',
+        email: '',
+        address: '',
+        description: '',
+        avatar: ''
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
+        ]
+      }
+    }
+  },
+  mounted() {
+  },
+  methods: {
+    handleBeforeUpload(file) {
+      var that = this
+      var isJPG = file.type === 'image/jpeg'
+      var isGIF = file.type === 'image/gif'
+      var isPNG = file.type === 'image/png'
+      var isBMP = file.type === 'image/bmp'
+      var isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        that.$message.error({ showClose: true, message: '上传图片必须是JPG/GIF/PNG/BMP 格式!', duration: 2000 })
+      }
+      if (!isLt2M) {
+        that.$message.error({ showClose: true, message: '上传图片大小不能超过 2MB!', duration: 2000 })
+      }
+      return (isJPG || isGIF || isPNG || isBMP) && isLt2M
+    },
+    handleSuccess(res, file) {
+      if (res.success) {
+        this.imageUrl = URL.createObjectURL(file.raw)
+        this.form.avatar = res.data
+      }
+    },
+    handleSaveProfile() {
+      var that = this
+      that.$refs.form.validate((valid) => {
+        if (valid) {
+          that.loading = true
+          var params = Object.assign({}, that.form)
+          API.changeProfile(params).then(function(result) {
+            that.loading = false
+            if (result.success) {
+              that.$message.success({ showClose: true, message: '修改成功', duration: 2000 })
+            } else {
+              that.$message.error({ showClose: true, message: '修改失败', duration: 2000 })
+            }
+          }, function(err) {
+            that.loading = false
+            that.$message.error({ showClose: true, message: err.toString(), duration: 2000 })
+          }).catch(function(error) {
+            that.loading = false
+            console.log(error)
+            that.$message.error({ showClose: true, message: '请求出现异常', duration: 2000 })
+          })
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  line-height: 120px !important;
+  text-align: center;
+}
+.avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+</style>
