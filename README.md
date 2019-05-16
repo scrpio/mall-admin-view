@@ -1,8 +1,4 @@
-# »ùÓÚ vue + element-ui µÄºóÌ¨¹ÜÀíÏµÍ³
-
-> A Vue.js project
-
-## Build Setup
+## åŸºäº vue + element-ui çš„åå°ç®¡ç†ç³»ç»Ÿ
 
 ``` bash
 # install dependencies
@@ -26,8 +22,5 @@ npm run e2e
 # run all tests
 npm test
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
 
 ![image](https://github.com/scrpio/images/blob/master/mall-admin-home.png)
