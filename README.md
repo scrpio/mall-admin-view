@@ -1,4 +1,4 @@
-# mall-admin-view
+# 基于 vue + element-ui 的后台管理系统
 
 > A Vue.js project
 
@@ -28,3 +28,6 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+![image](https://github.com/scrpio/images/blob/master/mall-admin-home.png)

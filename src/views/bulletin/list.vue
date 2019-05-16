@@ -88,7 +88,7 @@ export default {
     jumpTo(id) {
       this.$router.push({
         path: '/bulletin/editor',
-        name: 'editor',
+        name: 'Editor',
         params: {
           id: id
         }
